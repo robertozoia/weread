@@ -13,7 +13,6 @@ import json
 import re
 
 
-
 USER_AGENT =  "WeReadImporter"
 authentication_url = "http://weread.com/login_action.php"
 
