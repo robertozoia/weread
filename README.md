@@ -16,10 +16,16 @@ As I had 200+ books in weRead, I wrote this script to recover them in a simple f
 
 ## Usage
 
-Modify <code>settings.py</code> with your email/password and profile url combination, and then invoke the script from the command line:
+1. From the command line:
 
-    $ python weread.py
-    
+    $ python weread.py myemail@email.com password
+  
+2. As a library:
+
+	import weread
+
+	books = weread.main('myemail@email.com', 'password')
+ 
 
 ## To Do
 

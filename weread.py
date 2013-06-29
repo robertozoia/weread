@@ -11,10 +11,13 @@ import cookielib
 import hashlib
 import json
 import re
+import sys
 
 
-USER_AGENT =  "WeReadImporter"
+
+USER_AGENT =  "mybooklibrary"
 authentication_url = "http://weread.com/login_action.php"
+cmd_line = False
 
 # http://stackoverflow.com/questions/13925983/login-to-website-using-urllib2-python-2-7
 
@@ -60,7 +63,27 @@ def init():
     urllib2.install_opener(opener)
 
 
-def get_number_of_pages():
+def get_profile():
+    """
+    Returns a tuple containing weread username and user number (needed for
+    building the weread profile url.
+    
+    Args:
+        none
+        
+    Returns:
+        A string with the url of the user's weRead profile page.
+    """
+    
+    response = urllib2.urlopen("http://weread.com/iread_index.php")
+
+    black_magic = re.compile("My profile\s*<\s*/span>.*<a\s+href=['\"]http://weread.com/profile/(?P<user>.*?)/(?P<number>\d+)[?]src=['\"]\s+class\s*=\s*['\"]smitemtext['\"]\s*>\s*<span\s+class\s*=['\"]smitemtextdisplay['\"]>\s*My\s+books\s*<\s*/span\s*>",re.DOTALL)
+
+    r = black_magic.search(response.read())
+    return "http://weread.com/profile/%s/%s/" % r.groups()
+    
+
+def get_number_of_pages(weread_profile_url):
     """
     Retrieves the number of pages in the user's bookshelf.
     
@@ -86,7 +109,7 @@ def parse_page(page):
         bookshelf page
     
     Returns:
-        list of books, each book is tuple in the format (book title, author).
+        list of books, each book is tuple in the format (isbn, book title, author).
     """
  
     # The author is in an anchor tag with class uSAuthorText.
@@ -103,9 +126,20 @@ def parse_page(page):
     
     r = black_magic.findall(page)
     return r
-    
 
-    
+
+def get_page_i(weread_profile_url, i):
+    """
+    Returns books from page i of user profile
+    """
+    url_string = "%s" % (weread_profile_url, )  + "page-%d"
+    response = urllib2.urlopen(url_string % i)
+        
+    page = response.read()    
+    results = parse_page(page)
+    return results    
+
+
 def get_bookshelf():
     """
     Fetch user's bookshelf.
@@ -117,22 +151,26 @@ def get_bookshelf():
     
         A list of tuples containing, for each book, (isbn, title, author)
     """
-
-    url_string = "%s" % (weread_profile_url, )  + "page-%d" 
-    total_pages = get_number_of_pages()
     
-    print "Total pages: %s" % total_pages
+    weread_profile_url = get_profile()
+    url_string = "%s" % (weread_profile_url, )  + "page-%d" 
+    
+    if cmd_line:  print("User profile url: %s" %  weread_profile_url)
+        
+    total_pages = get_number_of_pages(weread_profile_url)
+    
+    if cmd_line: print("Total pages: %s" % total_pages)
     
     results = []
-    
+        
     for i in range(1, total_pages):
+        if cmd_line:
+            sys.stdout.write("Processing page %d of %d. \r" % (i, total_pages ))
+            sys.stdout.flush()
 
-        print "Reading page %d..." % i        
-        response = urllib2.urlopen(url_string % i)
-        print "Read page %d." % i
-
-        page = response.read()    
-        results.append(parse_page(page))
+        results += get_page_i(weread_profile_url, i)
+    
+    if cmd_line:  print()
     
     return results
     
@@ -148,7 +186,29 @@ def main(email, password):
     
     books = get_bookshelf()
     
+    return books
+    
     
 if __name__ == '__main__':
-    from settings import *
-    main(weread_email, weread_password)
+
+    import argparse
+    import importlib
+    
+    # Parse command line arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("email", help="The email associated to your weRead account.")
+    parser.add_argument("password", help="Your weRead password.")
+    
+    parser.parse_args()
+    args = parser.parse_args()
+    weread_email = args.email
+    weread_password = args.password 
+    
+    cmd_line = True
+    books = main(weread_email, weread_password)
+    
+    for b in books:
+        isbn, title, author = b
+        print "%s\t%-30s\t%s" % (isbn, author, title)
+    
+        
