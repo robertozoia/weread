@@ -29,6 +29,5 @@ As I had 200+ books in weRead, I wrote this script to recover them in a simple f
 
 ## To Do
 
-*  Get profile url directly from web page.
-*  Command line options.
 *  Output formats.
+*  Launch multiple threads to make parsing faster.
