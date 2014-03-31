@@ -1,8 +1,8 @@
 weread-export
 =============
 
-## Update (2014-03-31) ##
-weread.com is no longer up.  Now the page redirects to flipkart.com (according to Wikipedia, [weRead was acquired by Flikart in 2010](http://en.wikipedia.org/wiki/WeRead){: target='blank'}).  So, this has no use now.
+### Update (2014-03-31)
+weread.com is no longer up.  Now the page redirects to flipkart.com (according to Wikipedia, [weRead was acquired by Flikart in 2010](http://en.wikipedia.org/wiki/WeRead)).  So, this has no use now.
 
 
 ## Recover all your books from WeRead.
