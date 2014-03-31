@@ -1,7 +1,11 @@
 weread-export
 =============
 
-This python script will let you recover all your books from WeRead.
+## Update (2014-03-31) ##
+weread.com is no longer up.  Now the page redirects to flipkart.com (according to Wikipedia, [weRead was acquired by Flikart in 2010](http://en.wikipedia.org/wiki/WeRead){: target='blank'}).  So, this has no use now.
+
+
+## Recover all your books from WeRead.
 
 WeRead, initially named iRead, was a Facebook App that became popular around 2008, and let you share the titles of the books you were reading with your friends.  It also served as a bookshelf, where you could keep track of your readings.  
 
@@ -11,7 +15,7 @@ As I had 200+ books in weRead, I wrote this script to recover them in a simple f
 
 ## Dependencies
 
-*  The script has been tested on Python 2.7.3.  I have not tested it in Python 3.
+*  The script has been tested on Python 2.7.3.  I has not been tested in Python 3.
 *  No additional libraries are needed.
 
 ## Usage
@@ -26,8 +30,3 @@ As I had 200+ books in weRead, I wrote this script to recover them in a simple f
 
 	books = weread.main('myemail@email.com', 'password')
  
-
-## To Do
-
-*  Output formats.
-*  Launch multiple threads to make parsing faster.
